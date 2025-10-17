@@ -1,125 +1,192 @@
 "use client";
+
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  AlertTriangle,
+  ShoppingCart,
+  TrendingDown,
+  Package,
+  CheckCircle2,
+  Clock
+} from "lucide-react";
 
-// Magic numbers/strings as named constants
 const SECTION_PADDING = "px-5";
-const PAGE_VERTICAL_SPACE = "space-y-6 py-16";
-const CARD_INNER_CLASS = "px-4 flex flex-col gap-1";
-const FRIDGE_ITEMS = [
-  {
-    name: "계란",
-    dDay: "D-1",
-    desc: "풀무원 유정란",
-    progress: 85,
-  },
-  {
-    name: "우유",
-    dDay: "D-3",
-    desc: "매일 우유 1L",
-    progress: 50,
-  },
-  {
-    name: "치즈",
-    dDay: "D-5",
-    desc: "서울우유 슬라이스치즈",
-    progress: undefined, // 예시: progress bar 없는 경우
-  },
-];
-const SHOPPING_ACTIVITY = {
-  user: {
-    name: "도토리",
-    avatarUrl: "https://github.com/shadcn.png",
-    fallback: "CN",
-  },
-  action: "쿠키 1개를 추가하였습니다.",
+const PAGE_VERTICAL_SPACE = "space-y-6 pt-20 pb-24";
+
+// 임시 데이터
+const todayBriefing = {
+  expiringToday: [
+    { name: "토마토", location: "냉장", quantity: 3 },
+    { name: "우유", location: "냉장", quantity: 1 },
+  ],
+  expiringSoon: [
+    { name: "계란", daysLeft: 2, location: "냉장" },
+    { name: "양상추", daysLeft: 3, location: "냉장" },
+    { name: "두부", daysLeft: 3, location: "냉장" },
+  ],
+  shoppingList: 5,
+  totalItems: 51,
+  lastUpdate: "2시간 전",
 };
 
-function FridgeStatusList() {
-  return (
-    <ul className="space-y-2">
-      {FRIDGE_ITEMS.map((item) => (
-        <Card key={item.name}>
-          <div className={CARD_INNER_CLASS}>
-            <div className="flex justify-between w-full">
-              <span className="font-bold">{item.name}</span>
-              <span className="text-xs text-gray-500">{item.dDay}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-400">{item.desc}</span>
-              {typeof item.progress === "number" && (
-                <Progress
-                  value={item.progress}
-                  className="w-1/4"
-                  color="green"
-                />
-              )}
-            </div>
-          </div>
-        </Card>
-      ))}
-    </ul>
-  );
-}
-
-function ShoppingActivityCard() {
-  const { user, action } = SHOPPING_ACTIVITY;
-  return (
-    <Card>
-      <div className="px-4 flex flex-col items-center gap-1">
-        <div className="flex justify-between items-center w-full">
-          <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage src={user.avatarUrl} alt={user.name} />
-              <AvatarFallback>{user.fallback}</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <span className="text-md font-bold">{user.name}</span>
-              <span className="text-xs text-gray-500">{action}</span>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4" color="gray" />
-        </div>
-      </div>
-    </Card>
-  );
-}
+const quickStats = [
+  { label: "전체 재고", value: 51, icon: Package, color: "text-blue-600", bgColor: "bg-blue-50" },
+  { label: "오늘 만료", value: 2, icon: AlertTriangle, color: "text-red-600", bgColor: "bg-red-50" },
+  { label: "쇼핑 목록", value: 5, icon: ShoppingCart, color: "text-green-600", bgColor: "bg-green-50" },
+];
 
 export default function HomePage() {
-  // 오늘 날짜 포맷 (간단한 로직은 바로 위에)
   const today = React.useMemo(
     () =>
       new Date().toLocaleDateString("ko-KR", {
-        weekday: "long",
         month: "long",
         day: "numeric",
-        year: "numeric",
+        weekday: "short",
       }),
     []
   );
 
   return (
-    <div
-      className={`relative min-h-screen bg-[#FAFAF5] ${PAGE_VERTICAL_SPACE}`}
-    >
-      {/* 상단 날짜/그룹명 */}
+    <div className={`relative min-h-screen bg-[#FAFAF5] ${PAGE_VERTICAL_SPACE}`}>
+      {/* 헤더 */}
       <section className={SECTION_PADDING}>
-        <div className="text-2xl font-bold mt-1">{today}</div>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">오늘의 브리핑</h1>
+            <p className="text-sm text-gray-500 mt-1">{today}</p>
+          </div>
+          <div className="flex items-center gap-1 text-xs text-gray-400">
+            <Clock className="w-3 h-3" />
+            {todayBriefing.lastUpdate}
+          </div>
+        </div>
       </section>
 
-      {/* Fridge Status */}
+      {/* 퀵 통계 */}
       <section className={SECTION_PADDING}>
-        <div className="font-bold mb-2">냉장고 현황</div>
-        <FridgeStatusList />
+        <div className="grid grid-cols-3 gap-3">
+          {quickStats.map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <Card key={stat.label} className="p-3">
+                <div className="flex flex-col items-center">
+                  <div className={`p-2 rounded-full ${stat.bgColor} mb-2`}>
+                    <Icon className={`w-4 h-4 ${stat.color}`} />
+                  </div>
+                  <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
+                  <p className={`text-lg font-bold ${stat.color}`}>{stat.value}</p>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
       </section>
 
-      {/* Today's Shopping */}
+      {/* 오늘 만료 - 긴급 */}
+      {todayBriefing.expiringToday.length > 0 && (
+        <section className={SECTION_PADDING}>
+          <div className="flex items-center gap-2 mb-3">
+            <AlertTriangle className="w-5 h-5 text-red-600" />
+            <h2 className="text-lg font-bold text-gray-800">오늘 만료 (긴급!)</h2>
+          </div>
+          <div className="space-y-2">
+            {todayBriefing.expiringToday.map((item, index) => (
+              <Card key={index} className="p-4 border-l-4 border-l-red-500">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-gray-800">{item.name}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {item.location} · {item.quantity}개
+                    </p>
+                  </div>
+                  <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-100">
+                    D-Day
+                  </Badge>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 임박 만료 (1-3일) */}
       <section className={SECTION_PADDING}>
-        <div className="font-bold mb-2">오늘의 쇼핑</div>
-        <ShoppingActivityCard />
+        <div className="flex items-center gap-2 mb-3">
+          <Clock className="w-5 h-5 text-orange-600" />
+          <h2 className="text-lg font-bold text-gray-800">만료 임박 (1-3일)</h2>
+        </div>
+        <Card className="p-4">
+          <div className="space-y-3">
+            {todayBriefing.expiringSoon.map((item, index) => (
+              <div key={index} className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-orange-500" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{item.name}</p>
+                    <p className="text-xs text-gray-500">{item.location}</p>
+                  </div>
+                </div>
+                <Badge variant="outline" className="text-orange-600 border-orange-300">
+                  D-{item.daysLeft}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </section>
+
+      {/* 오늘의 액션 아이템 */}
+      <section className={SECTION_PADDING}>
+        <h2 className="text-lg font-bold text-gray-800 mb-3">오늘의 할 일</h2>
+        <div className="space-y-2">
+          <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-red-50 rounded-full">
+                <AlertTriangle className="w-4 h-4 text-red-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-800">만료 임박 식재료 확인</p>
+                <p className="text-xs text-gray-500 mt-1">2개 항목이 오늘 만료돼요</p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-50 rounded-full">
+                <ShoppingCart className="w-4 h-4 text-green-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-800">쇼핑 목록 체크</p>
+                <p className="text-xs text-gray-500 mt-1">{todayBriefing.shoppingList}개 항목이 대기중이에요</p>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* 이번 주 성과 */}
+      <section className={SECTION_PADDING}>
+        <h2 className="text-lg font-bold text-gray-800 mb-3">이번 주 성과</h2>
+        <Card className="p-4 bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-green-100 rounded-full">
+              <TrendingDown className="w-5 h-5 text-green-600" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-gray-800">폐기율 5% 감소!</p>
+              <p className="text-xs text-gray-600 mt-1">
+                지난주보다 더 효율적으로 관리하고 있어요
+              </p>
+              <div className="flex items-center gap-2 mt-2">
+                <CheckCircle2 className="w-4 h-4 text-green-600" />
+                <span className="text-xs text-green-700 font-medium">잘하고 있어요!</span>
+              </div>
+            </div>
+          </div>
+        </Card>
       </section>
     </div>
   );
