@@ -6,9 +6,7 @@ import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
   { label: "Home", icon: "🏠", href: "/Home" },
-  { label: "Shopping", icon: "🛒", href: "/Shopping" },
   { label: "Fridge", icon: "🧊", href: "/Fridge" },
-  { label: "Statistics", icon: "📊", href: "/Statistics" },
   { label: "Settings", icon: "⚙️", href: "/Settings" },
 ];
 
@@ -19,7 +17,7 @@ export default function BottomNavigation() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
       <ul className="flex justify-between items-center h-18 px-2">
-        {NAV_ITEMS.map((item, idx) => {
+        {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           return (
             <li key={item.label} className="flex-1">
