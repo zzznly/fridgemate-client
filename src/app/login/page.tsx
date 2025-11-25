@@ -22,7 +22,7 @@ export default function LoginPage() {
     // TODO: 백엔드 API 연동
     setTimeout(() => {
       setIsLoading(false);
-      router.push("/Home");
+      router.push("/home");
     }, 1000);
   };
 
@@ -81,7 +81,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               계정이 없으신가요?{" "}
-              <Link href="/Signup" className="text-green-700 font-semibold hover:underline">
+              <Link href="/signup" className="text-green-700 font-semibold hover:underline">
                 회원가입
               </Link>
             </p>

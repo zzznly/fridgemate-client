@@ -131,22 +131,6 @@ export default function HomePage() {
           </div>
         </Card>
       </section>
-
-      {/* 오늘의 액션 아이템 */}
-      <section className={SECTION_PADDING}>
-        <h2 className="text-lg font-bold text-gray-800 mb-3">오늘의 할 일</h2>
-        <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-red-50 rounded-full">
-              <AlertTriangle className="w-4 h-4 text-red-600" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-800">만료 임박 식재료 확인</p>
-              <p className="text-xs text-gray-500 mt-1">2개 항목이 오늘 만료돼요</p>
-            </div>
-          </div>
-        </Card>
-      </section>
     </div>
   );
 }

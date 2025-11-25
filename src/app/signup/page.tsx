@@ -49,7 +49,7 @@ export default function SignupPage() {
     // TODO: 백엔드 API 연동
     setTimeout(() => {
       setIsLoading(false);
-      router.push("/Login");
+      router.push("/login");
     }, 1000);
   };
 
@@ -145,7 +145,7 @@ export default function SignupPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               이미 계정이 있으신가요?{" "}
-              <Link href="/Login" className="text-green-700 font-semibold hover:underline">
+              <Link href="/login" className="text-green-700 font-semibold hover:underline">
                 로그인
               </Link>
             </p>
